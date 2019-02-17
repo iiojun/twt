@@ -1,0 +1,9 @@
+<h2><%= link_to @trend.label, 
+		"https://twitter.com/search?q=#{@trend.label}",
+		:target => '_blank' %></h2>
+<p><%= t('collected') %>
+<%= link_to l(@trend.collected, format: :long), 
+		"../#{@trend.collected}", :class => 'href' %>
+<%= link_to t('prev_item'), trend_path(@prev), :class => 'href' if @prev != nil %>
+<%= link_to t('next_item'), trend_path(@next), :class => 'href' if @next != nil %></p>
+<div id="graph_canvas" data-src="<%= api_trend_path(@trend) %>"></div>

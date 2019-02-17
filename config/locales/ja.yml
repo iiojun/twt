@@ -1,0 +1,28 @@
+ja:
+  date:
+    formats:
+      default: "%Y/%m/%d"
+      long: "%Y年%m月%d日"
+      short: "%m/%d"
+  time:
+    formats:
+      default: "%Y/%m/%d %H:%M:%S"
+      long: "%Y年%m月%d日 %H時%M分%S秒 %z"
+      short: "%y/%m/%d %H:%M"
+
+  views:
+    pagination:
+      first: "最初"
+      last: "最後"
+      previous: "前"
+      next: "次"
+      truncate: "..."
+
+  trendlist: 'トレンド一覧'
+  collected: '取得日:'
+  prev_day: '←前日'
+  next_day: '翌日→'
+  prev_item: '←'
+  next_item: '→'
+  no_kw_err: '検索キーワードを指定して、再度、試してください'
+  no_results: '検索結果が見つかりませんでした。再度、試してください'

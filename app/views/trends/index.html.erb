@@ -1,0 +1,12 @@
+<h2><%= t('trendlist') %> (<%= t('collected') %>
+<%= l(Date.parse(@date), format: :long) %>)
+<%= link_to t('prev_day'), @prev_date, :class => 'href' if @prev_date != nil %>
+<%= link_to t('next_day'), @next_date, :class => 'href' if @next_date != nil %>
+</h2>
+<% @trends.each do |trend| %>
+<span class="href"><%= link_to trend.label, trend_path(trend) %></span>
+<% end %>
+<% if File.exist? 'app/assets/images/graphs/graph_'+@date+'.png' %>
+  <hr />
+  <%= image_tag 'graphs/graph_'+@date+'.png', :width => '100%' %>
+<% end %>
