@@ -65,4 +65,5 @@ gem 'jquery-rails'
 gem 'd3-rails'
 gem 'http_accept_language'
 gem 'kaminari', '~> 0.17.0'
-gem "bootstrap-sass", ">= 3.4.1"
+gem 'bootstrap-sass', '>= 3.4.1'
+gem 'nokogiri', '~> 1.10.4'
