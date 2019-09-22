@@ -42,12 +42,12 @@ def normalize(hash_obj, p_flag):
 ###########################################################
 import MeCab
 
-# please modify PATH_TO_MECAB-IPADIC-NEOLOGD
-m = MeCab.Tagger("-d PATH_TO_MECAB-IPADIC-NEOLOGD")
-#m = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd")
-stopwords = {'*', 'HTTPS', 'HTTP', 'WWW', 'の', 'ん', 'ン'}
+#PLASE MODIFY THE FOLLOWING INFORMATION
+m = MeCab.Tagger("-d PATH_TO_MECAB_NEOLOGD")
+#m = MeCab.Tagger("-d /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd")
+stopwords = {'*', 'HTTPS', 'HTTP', 'WWW', 'の', 'ん', 'ン', 'ω', '???'}
 
-def create_graph(keyword, tweets):
+def create_graph(keyword, collected, tweets):
   ary_of_ary = []
   for tweet in tweets:
     ary = []
@@ -78,9 +78,10 @@ def create_graph(keyword, tweets):
     kw_dict = sorted(kw_dict.items(), 
                 key = lambda x: x[1], reverse = True)[0:KW_THRESHOLD-1]
     kw_dict = normalize(kw_dict, True)
+    print("node_hash = {}")
+    print("trend = Trend.create(label: '{0}', collected:'{1}')"
+              .format(escape(keyword), collected))
     pp_node(kw_dict)
-  else: # the case if tweets do not contain any particular words
-    print("Trend.delete(trend)")
 
   corr_dict = {}
   for src in kw_dict:
@@ -113,7 +114,9 @@ import sqlite3
 from contextlib import closing
 
 def has_been_registered(keyword, collected):
-  dbfile = "../proto/db/development.sqlite3"
+  #PLASE MODIFY THE FOLLOWING INFORMATION
+  dbfile = "PATH_TO_THE_DATABASE_FILE(development.sqlite3)"
+  #dbfile = "/home/hikizo/twt/db/development.sqlite3"
   with closing(sqlite3.connect(dbfile)) as conn:
     c = conn.cursor()
     sql = 'select label, collected from trends where label=? and collected=?'
@@ -129,32 +132,28 @@ from datetime import date
 
 def main():
   # please replase WOEID to your location
-  woeid = 1118370 # Tokyo
+  woeid = 23424856 # Japan
+  #PLASE MODIFY THE FOLLOWING INFORMATION
   CK = 'ADD_HERE_YOUR_CONSUMER_KEY'    # Consumer Key
   CS = 'ADD_HERE_YOUR_CONSUMER_SECRET'    # Consumer Secret
   AT = 'ADD_HERE_YOUR_ACCESS_TOKEN'    # Access Token
   AS = 'ADD_HERE_YOUR_ACCESS_TOKEN_SECRET'    # Accesss Token Secert
 
   twitter = Twitter(auth = OAuth(AT,AS,CK,CS))
-
-  # obtaining trending topics
-  # if you want to get hashtag-based topics, remove 'exclude="hashtags"'
   results = twitter.trends.place(_id = woeid, exclude="hashtags")
+  # results = twitter.trends.place(_id = woeid)
 
   d = date.today()
   collected = d.strftime('%Y-%m-%d')
 
   for location in results:
     for trend in location["trends"]:
-      keyword = escape(trend["name"])
+      keyword = trend["name"]
       if has_been_registered(keyword, collected): continue
-      print("node_hash = {}")
-      print("trend = Trend.create(label: '{0}', collected:'{1}')"
-              .format(keyword, collected))
       query_kw = keyword + " exclude:retweets exclude:nativeretweets"
-      tw_rslts = twitter.search.tweets(q=query_kw, count=100)
+      tw_rslts = twitter.search.tweets(q=query_kw, lang='ja', locale='ja', count=100)
       tw_ary = []
       for tweet in tw_rslts["statuses"]: tw_ary.append(tweet["text"])
-      create_graph(keyword, tw_ary)
+      create_graph(keyword, collected, tw_ary)
 
 if __name__ == "__main__": main()
